@@ -1082,6 +1082,11 @@
         <input id="avoidInput" type="text" placeholder="z. B. nicht zu technisch, keine Übertreibungen" />
       </div>
 
+<div class="fg">
+  <label for="notesInput">Sonstiges / Notizen (optional)</label>
+  <textarea id="notesInput" placeholder="Alles, was sonst noch wichtig ist …"></textarea>
+</div>
+      
       <div class="fg">
         <label for="lengthInput">Länge ungefähr</label>
         <select id="lengthInput">
@@ -1106,11 +1111,16 @@
     </div>
 
     <div class="chat-in">
-      <div class="action-row">
-        <button class="chat-send" id="sendBtn" onclick="doGenerate()">Generate Script →</button>
-        <button class="ghost-btn" onclick="resetSession()">Reset</button>
-      </div>
-    </div>
+  <div class="fg">
+    <label for="chatInput">Nachricht an den Bot</label>
+    <textarea id="chatInput" rows="3" placeholder="Für spätere Änderungen, Rückfragen oder Extra-Wünsche …"></textarea>
+  </div>
+
+  <div class="action-row">
+    <button class="chat-send" id="sendBtn" onclick="doGenerate()">Generate Script →</button>
+    <button class="ghost-btn" onclick="resetSession()">Reset</button>
+  </div>
+</div>
   </div>
 
   <div class="rh" id="rhl" onmousedown="startResize(event,'left')"></div>
