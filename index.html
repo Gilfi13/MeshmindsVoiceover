@@ -1316,37 +1316,47 @@
   }
 
   function collectFormData(){
-    return {
-      topic: document.getElementById('topicInput').value.trim(),
-      hook_hint: document.getElementById('hookInput').value.trim(),
-      main_message: document.getElementById('messageInput').value.trim(),
-      cta_hint: document.getElementById('ctaInput').value.trim(),
-      must_include: document.getElementById('mustInput').value.trim(),
-      avoid: document.getElementById('avoidInput').value.trim(),
-      target_length: document.getElementById('lengthInput').value
-    };
-  }
+  return {
+    topic: document.getElementById('topicInput').value.trim(),
+    hook_hint: document.getElementById('hookInput').value.trim(),
+    main_message: document.getElementById('messageInput').value.trim(),
+    cta_hint: document.getElementById('ctaInput').value.trim(),
+    must_include: document.getElementById('mustInput').value.trim(),
+    avoid: document.getElementById('avoidInput').value.trim(),
+    notes: document.getElementById('notesInput').value.trim(),
+    chat_message: document.getElementById('chatInput').value.trim(),
+    target_length: document.getElementById('lengthInput').value
+  };
+}
 
   function briefToHtml(data){
-    const lines = [];
-    lines.push(`<strong>Thema:</strong> ${escHtml(data.topic)}`);
-    if (data.hook_hint) lines.push(`<strong>Hook-Idee:</strong> ${escHtml(data.hook_hint)}`);
-    if (data.main_message) lines.push(`<strong>Hauptaussage:</strong> ${nl2br(data.main_message)}`);
-    if (data.cta_hint) lines.push(`<strong>CTA:</strong> ${escHtml(data.cta_hint)}`);
-    if (data.must_include) lines.push(`<strong>Muss rein:</strong> ${nl2br(data.must_include)}`);
-    if (data.avoid) lines.push(`<strong>Vermeiden:</strong> ${escHtml(data.avoid)}`);
-    lines.push(`<strong>Länge:</strong> ${escHtml(data.target_length)}`);
-    return lines.join('<br>');
-  }
+  const lines = [];
+  lines.push(`<strong>Thema:</strong> ${escHtml(data.topic)}`);
+  if (data.hook_hint) lines.push(`<strong>Hook-Idee:</strong> ${escHtml(data.hook_hint)}`);
+  if (data.main_message) lines.push(`<strong>Hauptaussage:</strong> ${nl2br(data.main_message)}`);
+  if (data.cta_hint) lines.push(`<strong>CTA:</strong> ${escHtml(data.cta_hint)}`);
+  if (data.must_include) lines.push(`<strong>Muss rein:</strong> ${nl2br(data.must_include)}`);
+  if (data.avoid) lines.push(`<strong>Vermeiden:</strong> ${escHtml(data.avoid)}`);
+  if (data.notes) lines.push(`<strong>Sonstiges:</strong> ${nl2br(data.notes)}`);
+  if (data.chat_message) lines.push(`<strong>Nachricht:</strong> ${nl2br(data.chat_message)}`);
+  lines.push(`<strong>Länge:</strong> ${escHtml(data.target_length)}`);
+  return lines.join('<br>');
+}
 
   async function doGenerate(){
     const data = collectFormData();
 
-    if (!data.topic){
-      addMsg('ai', '⚠️ Bitte gib zuerst ein <strong>Thema</strong> ein.');
-      document.getElementById('topicInput').focus();
-      return;
-    }
+    if (!currentScript && !data.topic){
+  addMsg('ai', '⚠️ Bitte gib zuerst ein <strong>Thema</strong> ein.');
+  document.getElementById('topicInput').focus();
+  return;
+}
+
+if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !data.main_message && !data.cta_hint && !data.must_include && !data.avoid && !data.notes){
+  addMsg('ai', '⚠️ Schreib mir kurz, was ich ändern soll.');
+  document.getElementById('chatInput').focus();
+  return;
+}
 
     if (!WEBHOOK_URL || WEBHOOK_URL.includes('YOUR-N8N-DOMAIN')){
       addMsg('ai', '❌ Bitte trage zuerst deine echte <strong>n8n Webhook URL</strong> im Code bei <code>WEBHOOK_URL</code> ein.');
@@ -1364,30 +1374,34 @@
     showLoad(true);
     setAutoTags(null, null);
 
-    const payload = isRevision
-      ? {
-          action: 'revise',
-          topic: data.topic,
-          hook_hint: data.hook_hint,
-          main_message: data.main_message,
-          cta_hint: data.cta_hint,
-          must_include: data.must_include,
-          avoid: data.avoid,
-          target_length: data.target_length,
-          existing_script: currentScript.script || '',
-          format: currentScript.format || '',
-          platform: currentScript.platform || ''
-        }
-      : {
-          action: 'generate',
-          topic: data.topic,
-          hook_hint: data.hook_hint,
-          main_message: data.main_message,
-          cta_hint: data.cta_hint,
-          must_include: data.must_include,
-          avoid: data.avoid,
-          target_length: data.target_length
-        };
+   const payload = isRevision
+  ? {
+      action: 'revise',
+      topic: data.topic,
+      hook_hint: data.hook_hint,
+      main_message: data.main_message,
+      cta_hint: data.cta_hint,
+      must_include: data.must_include,
+      avoid: data.avoid,
+      notes: data.notes,
+      chat_message: data.chat_message,
+      target_length: data.target_length,
+      existing_script: currentScript.script || '',
+      format: currentScript.format || '',
+      platform: currentScript.platform || ''
+    }
+  : {
+      action: 'generate',
+      topic: data.topic,
+      hook_hint: data.hook_hint,
+      main_message: data.main_message,
+      cta_hint: data.cta_hint,
+      must_include: data.must_include,
+      avoid: data.avoid,
+      notes: data.notes,
+      chat_message: data.chat_message,
+      target_length: data.target_length
+    };
 
     try {
       const ctrl = new AbortController();
@@ -1433,6 +1447,7 @@
       document.getElementById('copyBtn').disabled = false;
       document.getElementById('ratingSec').style.display = 'block';
       document.getElementById('sendBtn').textContent = 'Apply Changes →';
+      document.getElementById('chatInput').value = '';
 
       const qaNote = currentScript.qa_score ? ` · QA ${escHtml(String(currentScript.qa_score))}/10` : '';
       addMsg(
@@ -1614,15 +1629,18 @@
     });
   }
 
-  function clearForm(){
-    document.getElementById('topicInput').value = '';
-    document.getElementById('hookInput').value = '';
-    document.getElementById('messageInput').value = '';
-    document.getElementById('ctaInput').value = '';
-    document.getElementById('mustInput').value = '';
-    document.getElementById('avoidInput').value = '';
-    document.getElementById('lengthInput').value = '30-45';
-  }
+ function clearForm(){
+  document.getElementById('topicInput').value = '';
+  document.getElementById('hookInput').value = '';
+  document.getElementById('messageInput').value = '';
+  document.getElementById('ctaInput').value = '';
+  document.getElementById('mustInput').value = '';
+  document.getElementById('avoidInput').value = '';
+  document.getElementById('notesInput').value = '';
+  document.getElementById('chatInput').value = '';
+  document.getElementById('lengthInput').value = '30-45';
+}
+
 
   function resetStars(){
     [1,2,3,4,5].forEach(i => {
@@ -1734,14 +1752,15 @@
     resizing = null;
   });
 
-  ['topicInput','hookInput','ctaInput','avoidInput'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', e => {
-      if (e.key === 'Enter'){
-        e.preventDefault();
-        doGenerate();
-      }
-    });
+  ['topicInput','hookInput','ctaInput','avoidInput','chatInput'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      doGenerate();
+    }
   });
+});
+
 
   applyWidths();
 </script>
