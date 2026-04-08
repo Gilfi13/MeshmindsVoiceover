@@ -1484,7 +1484,7 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
     if (secs.length > 0){
       secs.forEach(sec => {
         const cls = colorMap[sec.label] || 'body';
-        scriptHtml += `<span class="seg seg-${cls}"><span class="seg-label ${cls}">${escHtml(sec.label)}</span>${escHtml(sec.text)}</span> `;
+        scriptHtml += `<span class="seg seg-${cls}">${escHtml(sec.text)}</span> `;
       });
     } else {
       scriptHtml = nl2br(s.script || '');
