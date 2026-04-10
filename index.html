@@ -298,6 +298,59 @@
       flex-shrink:0;
     }
 
+    .brief-shell{
+      border-bottom:1px solid var(--g2);
+      flex-shrink:0;
+      background:#fff;
+    }
+
+    .brief-head{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-bottom:1px solid var(--g2);
+      background:#fcfcfc;
+    }
+
+    .brief-title{
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.2px;
+      color:var(--g5);
+      text-transform:uppercase;
+    }
+
+    .brief-toggle{
+      margin-left:auto;
+      border:1px solid var(--g2);
+      background:#fff;
+      color:var(--g5);
+      border-radius:6px;
+      width:26px;
+      height:22px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+      line-height:1;
+      transition:all .15s;
+    }
+
+    .brief-toggle:hover{
+      border-color:var(--or);
+      color:var(--or);
+    }
+
+    .brief-content{
+      max-height:620px;
+      overflow:hidden;
+      transition:max-height .3s ease;
+    }
+
+    .brief-shell.collapsed .brief-content{
+      max-height:0;
+    }
+
     .chip{
       padding:4px 10px;
       border-radius:999px;
@@ -1039,68 +1092,77 @@
       <button class="col-btn" id="colChat" onclick="togglePanel('chat')" title="Hide panel">‹</button>
     </div>
 
-    <div class="chips">
-      <div class="chip" onclick="fillQuick('Fuzzy Skin Option', 'Du musst diese Einstellung kennen', '', 'Speicher dir das für deinen nächsten Print', 'gut für Grip und bestimmte Oberflächen', 'nicht zu technisch', '30-45')">Fuzzy Skin</div>
-      <div class="chip" onclick="fillQuick('The biggest mistake 3D printing sellers make when pricing', 'Fast alle machen diesen Fehler', '', 'Folge für mehr Etsy Print Tipps', 'zu billig verkaufen', '', '30-45')">Pricing mistake</div>
-      <div class="chip" onclick="fillQuick('Bambu Lab A1 Mini — is it worth it for selling prints?', 'Lohnt sich dieser Drucker wirklich?', '', 'Kommentiere ob du ihn testen würdest', 'für kleine Produktideen', '', '45-60')">Printer review</div>
-    </div>
-
-    <div class="auto-strip">
-      <span class="auto-strip-label">Auto</span>
-      <div class="auto-tag detecting" id="tagFormat">⚡ Format</div>
-      <div class="auto-tag detecting" id="tagPlatform">🛒 Platform</div>
-    </div>
-
-    <div class="guided-form">
-      <div class="fg">
-        <label for="topicInput">Worum soll das Script gehen?</label>
-        <input id="topicInput" type="text" placeholder="z. B. Fuzzy Skin Option" />
+    <div class="brief-shell" id="briefShell">
+      <div class="brief-head">
+        <span class="brief-title">Brief Felder</span>
+        <button class="brief-toggle" id="briefToggle" onclick="toggleBriefCollapse()" title="Brief einklappen">▴</button>
       </div>
 
-      <div class="fg">
-        <label for="hookInput">Hook-Vorschlag (optional)</label>
-        <input id="hookInput" type="text" placeholder="z. B. Du musst diese Einstellung kennen" />
-      </div>
+      <div class="brief-content" id="briefContent">
+        <div class="chips">
+          <div class="chip" onclick="fillQuick('Fuzzy Skin Option', 'Du musst diese Einstellung kennen', '', 'Speicher dir das für deinen nächsten Print', 'gut für Grip und bestimmte Oberflächen', 'nicht zu technisch', '30-45')">Fuzzy Skin</div>
+          <div class="chip" onclick="fillQuick('The biggest mistake 3D printing sellers make when pricing', 'Fast alle machen diesen Fehler', '', 'Folge für mehr Etsy Print Tipps', 'zu billig verkaufen', '', '30-45')">Pricing mistake</div>
+          <div class="chip" onclick="fillQuick('Bambu Lab A1 Mini — is it worth it for selling prints?', 'Lohnt sich dieser Drucker wirklich?', '', 'Kommentiere ob du ihn testen würdest', 'für kleine Produktideen', '', '45-60')">Printer review</div>
+        </div>
 
-      <div class="fg">
-        <label for="messageInput">Was soll grob rüberkommen? (optional)</label>
-        <textarea id="messageInput" placeholder="z. B. Damit sehen manche Prints hochwertiger aus und haben mehr Grip"></textarea>
-      </div>
+        <div class="auto-strip">
+          <span class="auto-strip-label">Auto</span>
+          <div class="auto-tag detecting" id="tagFormat">⚡ Format</div>
+          <div class="auto-tag detecting" id="tagPlatform">🛒 Platform</div>
+        </div>
 
-      <div class="fg">
-        <label for="ctaInput">CTA-Vorschlag (optional)</label>
-        <input id="ctaInput" type="text" placeholder="z. B. Speichere dir das für deinen nächsten Print" />
-      </div>
+        <div class="guided-form">
+          <div class="fg">
+            <label for="topicInput">Worum soll das Script gehen?</label>
+            <input id="topicInput" type="text" placeholder="z. B. Fuzzy Skin Option" />
+          </div>
 
-      <div class="fg">
-        <label for="mustInput">Was soll unbedingt rein? (optional)</label>
-        <textarea id="mustInput" placeholder="z. B. gut für Grip, nicht für jedes Modell sinnvoll, kann Druckzeit erhöhen"></textarea>
-      </div>
+          <div class="fg">
+            <label for="hookInput">Hook-Vorschlag (optional)</label>
+            <input id="hookInput" type="text" placeholder="z. B. Du musst diese Einstellung kennen" />
+          </div>
 
-      <div class="fg">
-        <label for="avoidInput">Was soll vermieden werden? (optional)</label>
-        <input id="avoidInput" type="text" placeholder="z. B. nicht zu technisch, keine Übertreibungen" />
-      </div>
+          <div class="fg">
+            <label for="messageInput">Was soll grob rüberkommen? (optional)</label>
+            <textarea id="messageInput" placeholder="z. B. Damit sehen manche Prints hochwertiger aus und haben mehr Grip"></textarea>
+          </div>
 
-<div class="fg">
-  <label for="notesInput">Sonstiges / Notizen (optional)</label>
-  <textarea id="notesInput" placeholder="Alles, was sonst noch wichtig ist …"></textarea>
-</div>
-      
-      <div class="fg">
-        <label for="lengthInput">Länge ungefähr</label>
-        <select id="lengthInput">
-          <option value="30-45">ca. 30–45 Sekunden</option>
-          <option value="20-30">ca. 20–30 Sekunden</option>
-          <option value="45-60">ca. 45–60 Sekunden</option>
-          <option value="60-75">ca. 60–75 Sekunden</option>
-        </select>
-        <div class="field-help">Wenn du nur das Thema eingibst, ergänzt der Bot Hook, CTA und Struktur selbst.</div>
-      </div>
-    </div>
+          <div class="fg">
+            <label for="ctaInput">CTA-Vorschlag (optional)</label>
+            <input id="ctaInput" type="text" placeholder="z. B. Speichere dir das für deinen nächsten Print" />
+          </div>
 
-    <div class="hint-box">
-      Gib nur das ein, was du schon weißt. Alles, was leer bleibt, soll der Bot selbst ausarbeiten.
+          <div class="fg">
+            <label for="mustInput">Was soll unbedingt rein? (optional)</label>
+            <textarea id="mustInput" placeholder="z. B. gut für Grip, nicht für jedes Modell sinnvoll, kann Druckzeit erhöhen"></textarea>
+          </div>
+
+          <div class="fg">
+            <label for="avoidInput">Was soll vermieden werden? (optional)</label>
+            <input id="avoidInput" type="text" placeholder="z. B. nicht zu technisch, keine Übertreibungen" />
+          </div>
+
+          <div class="fg">
+            <label for="notesInput">Sonstiges / Notizen (optional)</label>
+            <textarea id="notesInput" placeholder="Alles, was sonst noch wichtig ist …"></textarea>
+          </div>
+
+          <div class="fg">
+            <label for="lengthInput">Länge ungefähr</label>
+            <select id="lengthInput">
+              <option value="30-45">ca. 30–45 Sekunden</option>
+              <option value="20-30">ca. 20–30 Sekunden</option>
+              <option value="45-60">ca. 45–60 Sekunden</option>
+              <option value="60-75">ca. 60–75 Sekunden</option>
+            </select>
+            <div class="field-help">Wenn du nur das Thema eingibst, ergänzt der Bot Hook, CTA und Struktur selbst.</div>
+          </div>
+        </div>
+
+        <div class="hint-box">
+          Gib nur das ein, was du schon weißt. Alles, was leer bleibt, soll der Bot selbst ausarbeiten.
+        </div>
+      </div>
     </div>
 
     <div id="msgs">
@@ -1190,6 +1252,7 @@
   const WEBHOOK_URL = 'https://domebi.app.n8n.cloud/webhook/voiceover-generator';
 
   let currentScript = null;
+  let hasAutoCollapsedBrief = false;
   let chatW = 380;
   let edW = 300;
   const MIN_PANEL = 200;
@@ -1313,6 +1376,25 @@
       pEl.textContent = '🛒 Platform';
       pEl.className = 'auto-tag detecting';
     }
+  }
+
+  function setBriefCollapsed(collapsed){
+    const shell = document.getElementById('briefShell');
+    const btn = document.getElementById('briefToggle');
+    if (!shell || !btn) return;
+
+    shell.classList.toggle('collapsed', collapsed);
+    btn.textContent = collapsed ? '▾' : '▴';
+    btn.title = collapsed ? 'Brief ausklappen' : 'Brief einklappen';
+  }
+
+  function toggleBriefCollapse(force){
+    const shell = document.getElementById('briefShell');
+    if (!shell) return;
+    const collapsed = typeof force === 'boolean'
+      ? force
+      : !shell.classList.contains('collapsed');
+    setBriefCollapsed(collapsed);
   }
 
   function collectFormData(){
@@ -1448,6 +1530,10 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
       document.getElementById('ratingSec').style.display = 'block';
       document.getElementById('sendBtn').textContent = 'Apply Changes →';
       document.getElementById('chatInput').value = '';
+      if (!isRevision && !hasAutoCollapsedBrief){
+        setBriefCollapsed(true);
+        hasAutoCollapsedBrief = true;
+      }
 
       const qaNote = currentScript.qa_score ? ` · QA ${escHtml(String(currentScript.qa_score))}/10` : '';
       addMsg(
@@ -1649,8 +1735,9 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
     });
   }
 
-  function resetSession(){
+function resetSession(){
     currentScript = null;
+    hasAutoCollapsedBrief = false;
     clearForm();
     resetStars();
     setAutoTags(null, null);
@@ -1676,6 +1763,7 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
     `;
 
     document.getElementById('topicInput').focus();
+    setBriefCollapsed(false);
   }
 
   function rate(n){
