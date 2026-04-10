@@ -32,14 +32,15 @@
       position:fixed;
       top:0; left:0; right:0;
       height:var(--top-h);
-      background:#fff;
-      border-bottom:1px solid var(--g2);
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
       display:flex;
       align-items:center;
       gap:10px;
       padding:0 16px;
       z-index:300;
-      box-shadow:0 1px 4px rgba(0,0,0,.06);
+      box-shadow:0 8px 24px rgba(0,0,0,.06);
     }
 
     .logo{
@@ -56,6 +57,25 @@
     }
 
     .sp{ flex:1; }
+
+    .top-link{
+      font-size:12px;
+      font-weight:700;
+      color:var(--g7);
+      border:1px solid var(--g2);
+      border-radius:9px;
+      padding:8px 12px;
+      text-decoration:none;
+      background:#fff;
+      transition:all .15s;
+      white-space:nowrap;
+    }
+
+    .top-link:hover{
+      color:var(--or);
+      border-color:var(--or);
+      transform:translateY(-1px);
+    }
 
     .xb{
       display:flex;
@@ -109,6 +129,7 @@
       flex-direction:column;
       overflow:hidden;
       flex-shrink:0;
+      box-shadow:0 14px 32px rgba(0,0,0,.05);
     }
 
     #chat{
@@ -230,74 +251,6 @@
       writing-mode:vertical-rl;
     }
 
-    #stepWrap{
-      padding:10px 14px;
-      border-bottom:1px solid var(--g2);
-      flex-shrink:0;
-      display:flex;
-      align-items:center;
-    }
-
-    .stp{
-      display:flex;
-      align-items:center;
-      gap:5px;
-      font-size:11px;
-      font-weight:700;
-      color:var(--g5);
-      padding:4px 8px;
-      border-radius:5px;
-      transition:all .2s;
-    }
-
-    .stp.active{
-      color:var(--or);
-      background:rgba(255,107,0,.07);
-    }
-
-    .stp.done{ color:#22c55e; }
-
-    .stp-n{
-      width:17px;
-      height:17px;
-      border-radius:50%;
-      font-size:9px;
-      font-weight:800;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:var(--g2);
-      color:var(--g5);
-      flex-shrink:0;
-      transition:all .2s;
-    }
-
-    .stp.active .stp-n{
-      background:var(--or);
-      color:#fff;
-    }
-
-    .stp.done .stp-n{
-      background:#dcfce7;
-      color:#22c55e;
-    }
-
-    .stp-sep{
-      flex:1;
-      height:1px;
-      background:var(--g2);
-      margin:0 2px;
-    }
-
-    .chips{
-      padding:10px 12px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:5px;
-      border-bottom:1px solid var(--g2);
-      flex-shrink:0;
-    }
-
     .brief-shell{
       border-bottom:1px solid var(--g2);
       flex-shrink:0;
@@ -349,76 +302,6 @@
 
     .brief-shell.collapsed .brief-content{
       max-height:0;
-    }
-
-    .chip{
-      padding:4px 10px;
-      border-radius:999px;
-      border:1.5px solid var(--g2);
-      font-size:11px;
-      font-weight:600;
-      color:var(--g7);
-      cursor:pointer;
-      transition:all .15s;
-      background:#fff;
-    }
-
-    .chip:hover{
-      border-color:var(--or);
-      color:var(--or);
-    }
-
-    .auto-strip{
-      padding:8px 12px;
-      border-bottom:1px solid var(--g2);
-      flex-shrink:0;
-      display:flex;
-      align-items:center;
-      gap:6px;
-      min-height:38px;
-    }
-
-    .auto-strip-label{
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:1.5px;
-      color:var(--g5);
-      text-transform:uppercase;
-      flex-shrink:0;
-    }
-
-    .auto-tag{
-      display:flex;
-      align-items:center;
-      gap:4px;
-      padding:3px 9px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:700;
-    }
-
-    .auto-tag.format{
-      background:rgba(255,107,0,.1);
-      color:var(--or);
-      border:1.5px solid rgba(255,107,0,.25);
-    }
-
-    .auto-tag.platform{
-      background:rgba(17,17,17,.06);
-      color:var(--g7);
-      border:1.5px solid var(--g2);
-    }
-
-    .auto-tag.detecting{
-      background:var(--g1);
-      color:var(--g5);
-      border:1.5px dashed var(--g3);
-      animation:pulse 1.2s infinite;
-    }
-
-    @keyframes pulse{
-      0%,100%{opacity:.5}
-      50%{opacity:1}
     }
 
     .guided-form{
@@ -757,8 +640,9 @@
     .script-viewer{
       background:#fff;
       border:1.5px solid var(--g2);
-      border-radius:10px;
+      border-radius:14px;
       overflow:hidden;
+      box-shadow:0 12px 30px rgba(0,0,0,.06);
     }
 
     .script-viewer-head{
@@ -781,49 +665,17 @@
     .script-viewer-body{
       padding:20px;
       font-size:14px;
-      line-height:2;
+      line-height:1.8;
       color:var(--bk);
+      min-height:280px;
+      white-space:pre-wrap;
+      outline:none;
+      border-top:1px solid rgba(0,0,0,.03);
     }
 
-    .seg{
-      display:inline;
-      border-radius:3px;
-      padding:1px 0;
-      cursor:default;
-      transition:background .15s;
-    }
-
-    .seg-hook{ background:rgba(255,107,0,.13); }
-    .seg-body{ background:rgba(255,214,0,.13); }
-    .seg-cta{ background:rgba(34,197,94,.12); }
-
-    .seg-label{
-      display:inline-block;
-      font-size:8px;
-      font-weight:800;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      padding:1px 5px;
-      border-radius:3px;
-      vertical-align:middle;
-      margin-right:4px;
-      position:relative;
-      top:-1px;
-    }
-
-    .seg-label.hook{
-      background:rgba(255,107,0,.15);
-      color:var(--or);
-    }
-
-    .seg-label.body{
-      background:rgba(255,214,0,.2);
-      color:#a16207;
-    }
-
-    .seg-label.cta{
-      background:rgba(34,197,94,.15);
-      color:#15803d;
+    .script-viewer-body:focus{
+      box-shadow:inset 0 0 0 2px rgba(255,107,0,.18);
+      background:#fffdfa;
     }
 
     .legend{
@@ -1079,67 +931,50 @@
   <div class="logo">meshminds3d</div>
   <span class="logo-sub">· Voiceover Studio</span>
   <div class="sp"></div>
+  <a class="top-link" href="https://meshminds-slideshow.vercel.app" target="_blank" rel="noopener noreferrer">↗ Slideshow öffnen</a>
   <button class="xb secondary" id="resetTopBtn" onclick="resetSession()">↺ New Script</button>
   <button class="xb primary" id="copyBtn" onclick="copyScript()" disabled>📋 Copy Script</button>
 </div>
 
 <div id="app">
   <div id="chat">
-    <div id="stepWrap">
-      <div class="stp active" id="s1"><div class="stp-n">1</div>Brief</div>
-      <div class="stp-sep"></div>
-      <div class="stp" id="s2"><div class="stp-n">2</div>Script</div>
-      <button class="col-btn" id="colChat" onclick="togglePanel('chat')" title="Hide panel">‹</button>
-    </div>
-
     <div class="brief-shell" id="briefShell">
       <div class="brief-head">
         <span class="brief-title">Brief Felder</span>
+        <button class="col-btn" id="colChat" onclick="togglePanel('chat')" title="Hide panel">‹</button>
         <button class="brief-toggle" id="briefToggle" onclick="toggleBriefCollapse()" title="Brief einklappen">▴</button>
       </div>
 
       <div class="brief-content" id="briefContent">
-        <div class="chips">
-          <div class="chip" onclick="fillQuick('Fuzzy Skin Option', 'Du musst diese Einstellung kennen', '', 'Speicher dir das für deinen nächsten Print', 'gut für Grip und bestimmte Oberflächen', 'nicht zu technisch', '30-45')">Fuzzy Skin</div>
-          <div class="chip" onclick="fillQuick('The biggest mistake 3D printing sellers make when pricing', 'Fast alle machen diesen Fehler', '', 'Folge für mehr Etsy Print Tipps', 'zu billig verkaufen', '', '30-45')">Pricing mistake</div>
-          <div class="chip" onclick="fillQuick('Bambu Lab A1 Mini — is it worth it for selling prints?', 'Lohnt sich dieser Drucker wirklich?', '', 'Kommentiere ob du ihn testen würdest', 'für kleine Produktideen', '', '45-60')">Printer review</div>
-        </div>
-
-        <div class="auto-strip">
-          <span class="auto-strip-label">Auto</span>
-          <div class="auto-tag detecting" id="tagFormat">⚡ Format</div>
-          <div class="auto-tag detecting" id="tagPlatform">🛒 Platform</div>
-        </div>
-
         <div class="guided-form">
           <div class="fg">
             <label for="topicInput">Worum soll das Script gehen?</label>
-            <input id="topicInput" type="text" placeholder="z. B. Fuzzy Skin Option" />
+            <input id="topicInput" type="text" placeholder="Thema eingeben" />
           </div>
 
           <div class="fg">
             <label for="hookInput">Hook-Vorschlag (optional)</label>
-            <input id="hookInput" type="text" placeholder="z. B. Du musst diese Einstellung kennen" />
+            <input id="hookInput" type="text" placeholder="Hook eingeben" />
           </div>
 
           <div class="fg">
             <label for="messageInput">Was soll grob rüberkommen? (optional)</label>
-            <textarea id="messageInput" placeholder="z. B. Damit sehen manche Prints hochwertiger aus und haben mehr Grip"></textarea>
+            <textarea id="messageInput" placeholder="Aussage eingeben"></textarea>
           </div>
 
           <div class="fg">
             <label for="ctaInput">CTA-Vorschlag (optional)</label>
-            <input id="ctaInput" type="text" placeholder="z. B. Speichere dir das für deinen nächsten Print" />
+            <input id="ctaInput" type="text" placeholder="CTA eingeben" />
           </div>
 
           <div class="fg">
             <label for="mustInput">Was soll unbedingt rein? (optional)</label>
-            <textarea id="mustInput" placeholder="z. B. gut für Grip, nicht für jedes Modell sinnvoll, kann Druckzeit erhöhen"></textarea>
+            <textarea id="mustInput" placeholder="Pflichtinhalte eingeben"></textarea>
           </div>
 
           <div class="fg">
             <label for="avoidInput">Was soll vermieden werden? (optional)</label>
-            <input id="avoidInput" type="text" placeholder="z. B. nicht zu technisch, keine Übertreibungen" />
+            <input id="avoidInput" type="text" placeholder="Unerwünschte Inhalte eingeben" />
           </div>
 
           <div class="fg">
@@ -1261,17 +1096,6 @@
   const LOAD_STEPS = ['ls1','ls2','ls3','ls4'];
   let loadTimeouts = [];
 
-  function fillQuick(topic, hook, message, cta, must, avoid, length){
-    document.getElementById('topicInput').value = topic || '';
-    document.getElementById('hookInput').value = hook || '';
-    document.getElementById('messageInput').value = message || '';
-    document.getElementById('ctaInput').value = cta || '';
-    document.getElementById('mustInput').value = must || '';
-    document.getElementById('avoidInput').value = avoid || '';
-    document.getElementById('lengthInput').value = length || '30-45';
-    document.getElementById('topicInput').focus();
-  }
-
   function escHtml(t){
     return String(t || '')
       .replace(/&/g, '&amp;')
@@ -1310,13 +1134,6 @@
     if (t) t.remove();
   }
 
-  function setStep(n){
-    [1,2].forEach(i => {
-      const el = document.getElementById('s' + i);
-      el.className = 'stp' + (i < n ? ' done' : i === n ? ' active' : '');
-    });
-  }
-
   function clearLoadAnimation(){
     loadTimeouts.forEach(id => clearTimeout(id));
     loadTimeouts = [];
@@ -1348,34 +1165,6 @@
     document.getElementById('scriptWrap').style.display = show ? 'none' : 'flex';
     if (show) startLoadAnimation();
     else clearLoadAnimation();
-  }
-
-  function setAutoTags(format, platform){
-    const fEl = document.getElementById('tagFormat');
-    const pEl = document.getElementById('tagPlatform');
-    const labels = {
-      reveal: '📋 Reveal',
-      warning: '⚠️ Warning',
-      experiment: '🧪 Experiment',
-      tutorial: '🛠️ Tutorial',
-      review: '🔍 Review'
-    };
-
-    if (format){
-      fEl.textContent = labels[String(format).toLowerCase()] || format;
-      fEl.className = 'auto-tag format';
-    } else {
-      fEl.textContent = '⚡ Format';
-      fEl.className = 'auto-tag detecting';
-    }
-
-    if (platform){
-      pEl.textContent = '🛒 ' + platform;
-      pEl.className = 'auto-tag platform';
-    } else {
-      pEl.textContent = '🛒 Platform';
-      pEl.className = 'auto-tag detecting';
-    }
   }
 
   function setBriefCollapsed(collapsed){
@@ -1452,9 +1241,7 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
 
     addMsg('user', briefToHtml(data));
     addTyping();
-    setStep(2);
     showLoad(true);
-    setAutoTags(null, null);
 
    const payload = isRevision
   ? {
@@ -1516,13 +1303,10 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
 
       if (!json.success) {
         addMsg('ai', `❌ <strong>Failed:</strong> ${escHtml(json.error || 'Unknown backend error')}`);
-        setStep(1);
-        setAutoTags(null, null);
         return;
       }
 
       currentScript = json.result || {};
-      setAutoTags(currentScript.format, currentScript.platform);
       renderScript(currentScript);
       renderStats(currentScript);
 
@@ -1550,8 +1334,6 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
         : err.message;
 
       addMsg('ai', `❌ Error: ${escHtml(msg)}`);
-      setStep(1);
-      setAutoTags(null, null);
     } finally {
       sendBtn.disabled = false;
       sendBtn.textContent = currentScript ? 'Apply Changes →' : 'Generate Script →';
@@ -1563,18 +1345,7 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
     wrap.style.display = 'flex';
     wrap.style.flexDirection = 'column';
 
-    const colorMap = { Hook:'hook', Body:'body', CTA:'cta' };
-    let scriptHtml = '';
-
-    const secs = Array.isArray(s.sections) ? s.sections : [];
-    if (secs.length > 0){
-      secs.forEach(sec => {
-        const cls = colorMap[sec.label] || 'body';
-        scriptHtml += `<span class="seg seg-${cls}">${escHtml(sec.text)}</span> `;
-      });
-    } else {
-      scriptHtml = nl2br(s.script || '');
-    }
+    const scriptHtml = escHtml(s.script || '');
 
     const meta = `
       <div class="script-meta">
@@ -1592,16 +1363,20 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
           <h3>Full Script</h3>
           <button class="copy-all" id="copyAllBtn" onclick="copyAll()">📋 Copy for ElevenLabs</button>
         </div>
-        <div class="script-viewer-body">${scriptHtml}</div>
+        <div class="script-viewer-body" id="editableScript" contenteditable="true" spellcheck="true">${scriptHtml}</div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot hook"></div>Hook</div>
-          <div class="legend-item"><div class="legend-dot body"></div>Body</div>
-          <div class="legend-item"><div class="legend-dot cta"></div>CTA</div>
+          <div class="legend-item">✏️ Direkt editierbar</div>
+          <div class="legend-item">💾 Wird beim Kopieren übernommen</div>
         </div>
       </div>
     `;
 
     wrap.innerHTML = meta + full;
+    const editable = document.getElementById('editableScript');
+    editable.addEventListener('input', () => {
+      if (!currentScript) return;
+      currentScript.script = editable.innerText.trim();
+    });
   }
 
   function renderStats(s){
@@ -1740,8 +1515,6 @@ function resetSession(){
     hasAutoCollapsedBrief = false;
     clearForm();
     resetStars();
-    setAutoTags(null, null);
-    setStep(1);
     showLoad(false);
 
     document.getElementById('copyBtn').disabled = true;
