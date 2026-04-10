@@ -1408,7 +1408,8 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
       `
       : '';
 
-    const researchSummaryHtml = s.research_summary
+    const hasResearchSummary = !!s.research_summary && !/keine recherche gefunden/i.test(s.research_summary);
+    const researchSummaryHtml = hasResearchSummary
       ? `
         <div class="stat-block">
           <div class="stat-label">Research Summary</div>
@@ -1436,12 +1437,6 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
         <div class="stat-sub">Generated estimate</div>
       </div>
 
-      <div class="stat-block">
-        <div class="stat-label">Format</div>
-        <div class="stat-value">${escHtml((s.format || 'auto').toUpperCase())}</div>
-        <div class="stat-sub">${escHtml(s.platform || 'Auto-selected')}</div>
-      </div>
-
       ${qaScore ? `
       <div class="stat-block ${qaCls}">
         <div class="stat-label">QA Score</div>
@@ -1451,16 +1446,6 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
       ` : ''}
 
       ${researchSummaryHtml}
-
-      <div class="divl"></div>
-
-      <div class="tips-sec">
-        <h4>ElevenLabs Tips</h4>
-        <div class="tip-row"><div class="tip-icon">✅</div><div>Wenn möglich im Backend Zahlen als Wörter ausgeben lassen</div></div>
-        <div class="tip-row"><div class="tip-icon">✅</div><div>Kurze Sätze klingen meist natürlicher in TTS</div></div>
-        <div class="tip-row"><div class="tip-icon">💡</div><div>Kommas geben kurze Pausen, Punkte längere</div></div>
-        <div class="tip-row"><div class="tip-icon">💡</div><div>Für Voiceover klare Hooks und konkrete CTA nutzen</div></div>
-      </div>
 
       ${sourcesHtml}
     `;
