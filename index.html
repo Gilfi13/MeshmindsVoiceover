@@ -373,6 +373,59 @@
       flex-shrink:0;
     }
 
+    .hook-picker{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .hook-picker-title{
+      font-size:11px;
+      color:var(--g5);
+      font-weight:700;
+    }
+
+    .hook-list{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .hook-option{
+      text-align:left;
+      border:1px solid var(--g2);
+      border-radius:8px;
+      background:#fff;
+      padding:8px 10px;
+      font-family:'DM Sans',sans-serif;
+      font-size:12px;
+      cursor:pointer;
+      transition:all .15s;
+    }
+
+    .hook-option:hover{
+      border-color:var(--or);
+    }
+
+    .hook-option.active{
+      border-color:var(--or);
+      background:rgba(255,107,0,.08);
+      color:#bb4f00;
+      font-weight:700;
+    }
+
+    .hook-actions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:6px;
+    }
+
+    .hook-btn{
+      padding:8px 10px;
+      font-size:12px;
+    }
+
     #msgs{
       flex:1;
       overflow-y:auto;
@@ -955,6 +1008,10 @@
           <div class="fg">
             <label for="hookInput">Hook-Vorschlag (optional)</label>
             <input id="hookInput" type="text" placeholder="Hook eingeben" />
+            <div id="hookPicker" class="hook-picker"></div>
+            <div class="hook-actions">
+              <button class="ghost-btn hook-btn" id="refreshHooksBtn" onclick="refreshHooks()" disabled>↻ 5 neue Hooks</button>
+            </div>
           </div>
 
           <div class="fg">
@@ -990,19 +1047,15 @@
               <option value="45-60">ca. 45–60 Sekunden</option>
               <option value="60-75">ca. 60–75 Sekunden</option>
             </select>
-            <div class="field-help">Wenn du nur das Thema eingibst, ergänzt der Bot Hook, CTA und Struktur selbst.</div>
           </div>
         </div>
 
-        <div class="hint-box">
-          Gib nur das ein, was du schon weißt. Alles, was leer bleibt, soll der Bot selbst ausarbeiten.
-        </div>
       </div>
     </div>
 
     <div id="msgs">
       <div class="msg ai">
-        <div class="bubble">👋 Gib mir dein Thema und optional ein paar Leitplanken. Wenn du nur das Thema eingibst, schreibe ich Hook, Hauptaussage und CTA selbst.</div>
+        <div class="bubble">👋 Gib dein Thema ein und klicke auf <strong>Generate Hooks</strong>. Ich zeige dir zuerst 5 Hooks. Nach deiner Auswahl schreibe ich das komplette Skript.</div>
         <div class="msg-time">Now</div>
       </div>
     </div>
@@ -1014,7 +1067,7 @@
   </div>
 
   <div class="action-row">
-    <button class="chat-send" id="sendBtn" onclick="doGenerate()">Generate Script →</button>
+    <button class="chat-send" id="sendBtn" onclick="doGenerate()">Generate Hooks →</button>
     <button class="ghost-btn" onclick="resetSession()">Reset</button>
   </div>
 </div>
@@ -1038,8 +1091,8 @@
     <div id="scriptWrap">
       <div class="empty-state">
         <div class="eicon">🎙️</div>
-        <h3>No script yet</h3>
-        <p>Gib ein Thema ein und optional deine Ideen für Hook, Aussage und CTA. Der Rest wird automatisch ergänzt.</p>
+        <h3>No hooks yet</h3>
+        <p>Gib ein Thema ein und starte mit 5 Hook-Vorschlägen. Nach der Auswahl wird das komplette Skript generiert.</p>
       </div>
     </div>
   </div>
@@ -1087,6 +1140,8 @@
   const WEBHOOK_URL = 'https://domebi.app.n8n.cloud/webhook/voiceover-generator';
 
   let currentScript = null;
+  let hookSuggestions = [];
+  let selectedHook = '';
   let hasAutoCollapsedBrief = false;
   let chatW = 380;
   let edW = 300;
@@ -1200,6 +1255,77 @@
   };
 }
 
+  function updateHookButtonsState(isLoading = false){
+    const refreshBtn = document.getElementById('refreshHooksBtn');
+    if (!refreshBtn) return;
+    const hasTopic = !!document.getElementById('topicInput').value.trim();
+    refreshBtn.disabled = isLoading || !hasTopic || !!currentScript;
+  }
+
+  function renderHookPicker(){
+    const picker = document.getElementById('hookPicker');
+    if (!picker) return;
+
+    if (!hookSuggestions.length){
+      picker.innerHTML = '';
+      return;
+    }
+
+    picker.innerHTML = `
+      <div class="hook-picker-title">Wähle eine Hook aus:</div>
+      <div class="hook-list">
+        ${hookSuggestions.map((hook, i) => `
+          <button
+            type="button"
+            class="hook-option ${selectedHook === hook ? 'active' : ''}"
+            onclick="selectHook(${i})"
+          >
+            ${escHtml(hook)}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function setHookSuggestions(hooks){
+    hookSuggestions = Array.isArray(hooks) ? hooks.filter(Boolean).slice(0, 5) : [];
+    selectedHook = '';
+    document.getElementById('hookInput').value = '';
+    renderHookPicker();
+    setSendButtonLabel();
+    updateHookButtonsState();
+  }
+
+  function selectHook(index){
+    const nextHook = hookSuggestions[index];
+    if (!nextHook) return;
+    selectedHook = nextHook;
+    document.getElementById('hookInput').value = nextHook;
+    renderHookPicker();
+    setSendButtonLabel();
+  }
+
+  function setSendButtonLabel(isBusy = false, isRevision = false){
+    const sendBtn = document.getElementById('sendBtn');
+    if (isBusy){
+      sendBtn.textContent = isRevision ? 'Revising…' : (selectedHook ? 'Writing…' : 'Generating Hooks…');
+      return;
+    }
+
+    if (currentScript){
+      sendBtn.textContent = 'Apply Changes →';
+      return;
+    }
+
+    sendBtn.textContent = selectedHook ? 'Generate Script →' : 'Generate Hooks →';
+  }
+
+  async function refreshHooks(){
+    if (currentScript) return;
+    selectedHook = '';
+    await doGenerate({ forceHooks: true });
+  }
+
   function briefToHtml(data){
   const lines = [];
   lines.push(`<strong>Thema:</strong> ${escHtml(data.topic)}`);
@@ -1214,63 +1340,76 @@
   return lines.join('<br>');
 }
 
-  async function doGenerate(){
+  async function doGenerate(opts = {}){
     const data = collectFormData();
+    const forceHooks = !!opts.forceHooks;
+    const isRevision = !!currentScript;
 
-    if (!currentScript && !data.topic){
-  addMsg('ai', '⚠️ Bitte gib zuerst ein <strong>Thema</strong> ein.');
-  document.getElementById('topicInput').focus();
-  return;
-}
+    if (!isRevision && !data.topic){
+      addMsg('ai', '⚠️ Bitte gib zuerst ein <strong>Thema</strong> ein.');
+      document.getElementById('topicInput').focus();
+      return;
+    }
 
-if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !data.main_message && !data.cta_hint && !data.must_include && !data.avoid && !data.notes){
-  addMsg('ai', '⚠️ Schreib mir kurz, was ich ändern soll.');
-  document.getElementById('chatInput').focus();
-  return;
-}
+    if (isRevision && !data.chat_message && !data.topic && !data.hook_hint && !data.main_message && !data.cta_hint && !data.must_include && !data.avoid && !data.notes){
+      addMsg('ai', '⚠️ Schreib mir kurz, was ich ändern soll.');
+      document.getElementById('chatInput').focus();
+      return;
+    }
 
     if (!WEBHOOK_URL || WEBHOOK_URL.includes('YOUR-N8N-DOMAIN')){
       addMsg('ai', '❌ Bitte trage zuerst deine echte <strong>n8n Webhook URL</strong> im Code bei <code>WEBHOOK_URL</code> ein.');
       return;
     }
 
-    const isRevision = !!currentScript;
+    const shouldGenerateHooks = !isRevision && (!selectedHook || forceHooks);
     const sendBtn = document.getElementById('sendBtn');
     sendBtn.disabled = true;
-    sendBtn.textContent = isRevision ? 'Revising…' : 'Writing…';
+    updateHookButtonsState(true);
+    setSendButtonLabel(true, isRevision);
 
     addMsg('user', briefToHtml(data));
     addTyping();
-    showLoad(true);
+    if (!shouldGenerateHooks) showLoad(true);
 
-   const payload = isRevision
-  ? {
-      action: 'revise',
-      topic: data.topic,
-      hook_hint: data.hook_hint,
-      main_message: data.main_message,
-      cta_hint: data.cta_hint,
-      must_include: data.must_include,
-      avoid: data.avoid,
-      notes: data.notes,
-      chat_message: data.chat_message,
-      target_length: data.target_length,
-      existing_script: currentScript.script || '',
-      format: currentScript.format || '',
-      platform: currentScript.platform || ''
-    }
-  : {
-      action: 'generate',
-      topic: data.topic,
-      hook_hint: data.hook_hint,
-      main_message: data.main_message,
-      cta_hint: data.cta_hint,
-      must_include: data.must_include,
-      avoid: data.avoid,
-      notes: data.notes,
-      chat_message: data.chat_message,
-      target_length: data.target_length
-    };
+    const payload = shouldGenerateHooks
+      ? {
+          action: 'generate_hooks',
+          topic: data.topic,
+          main_message: data.main_message,
+          must_include: data.must_include,
+          avoid: data.avoid,
+          notes: data.notes,
+          target_length: data.target_length
+        }
+      : (isRevision
+        ? {
+            action: 'revise',
+            topic: data.topic,
+            hook_hint: data.hook_hint,
+            main_message: data.main_message,
+            cta_hint: data.cta_hint,
+            must_include: data.must_include,
+            avoid: data.avoid,
+            notes: data.notes,
+            chat_message: data.chat_message,
+            target_length: data.target_length,
+            existing_script: currentScript.script || '',
+            format: currentScript.format || '',
+            platform: currentScript.platform || ''
+          }
+        : {
+            action: 'generate',
+            topic: data.topic,
+            hook_hint: selectedHook || data.hook_hint,
+            main_message: data.main_message,
+            cta_hint: data.cta_hint,
+            must_include: data.must_include,
+            avoid: data.avoid,
+            notes: data.notes,
+            chat_message: data.chat_message,
+            target_length: data.target_length
+          });
 
     try {
       const ctrl = new AbortController();
@@ -1306,13 +1445,29 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
         return;
       }
 
+      if (shouldGenerateHooks){
+        const hooks = Array.isArray(json.hooks)
+          ? json.hooks
+          : Array.isArray(json.result?.hooks)
+            ? json.result.hooks
+            : [];
+
+        if (!hooks.length){
+          addMsg('ai', '❌ Keine Hooks erhalten. Prüfe bitte deinen Workflow für <code>action=generate_hooks</code>.');
+          return;
+        }
+
+        setHookSuggestions(hooks);
+        addMsg('ai', '✨ Ich habe dir 5 Hooks vorbereitet. Wähle eine Hook aus und klicke dann auf <strong>Generate Script</strong>.');
+        return;
+      }
+
       currentScript = json.result || {};
       renderScript(currentScript);
       renderStats(currentScript);
 
       document.getElementById('copyBtn').disabled = false;
       document.getElementById('ratingSec').style.display = 'block';
-      document.getElementById('sendBtn').textContent = 'Apply Changes →';
       document.getElementById('chatInput').value = '';
       if (!isRevision && !hasAutoCollapsedBrief){
         setBriefCollapsed(true);
@@ -1336,7 +1491,8 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
       addMsg('ai', `❌ Error: ${escHtml(msg)}`);
     } finally {
       sendBtn.disabled = false;
-      sendBtn.textContent = currentScript ? 'Apply Changes →' : 'Generate Script →';
+      updateHookButtonsState();
+      setSendButtonLabel(false, isRevision);
     }
   }
 
@@ -1485,6 +1641,8 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
   document.getElementById('notesInput').value = '';
   document.getElementById('chatInput').value = '';
   document.getElementById('lengthInput').value = '30-45';
+  setHookSuggestions([]);
+  updateHookButtonsState();
 }
 
 
@@ -1497,20 +1655,22 @@ if (currentScript && !data.chat_message && !data.topic && !data.hook_hint && !da
 
 function resetSession(){
     currentScript = null;
+    hookSuggestions = [];
+    selectedHook = '';
     hasAutoCollapsedBrief = false;
     clearForm();
     resetStars();
     showLoad(false);
 
     document.getElementById('copyBtn').disabled = true;
-    document.getElementById('sendBtn').textContent = 'Generate Script →';
+    setSendButtonLabel();
     document.getElementById('ratingSec').style.display = 'none';
 
     document.getElementById('scriptWrap').innerHTML = `
       <div class="empty-state">
         <div class="eicon">🎙️</div>
-        <h3>No script yet</h3>
-        <p>Gib ein Thema ein und optional deine Ideen für Hook, Aussage und CTA. Der Rest wird automatisch ergänzt.</p>
+        <h3>No hooks yet</h3>
+        <p>Gib ein Thema ein und starte mit 5 Hook-Vorschlägen. Nach der Auswahl wird das komplette Skript generiert.</p>
       </div>
     `;
 
@@ -1607,6 +1767,14 @@ function resetSession(){
   });
 });
 
+
+  document.getElementById('topicInput').addEventListener('input', () => {
+    if (currentScript) return;
+    updateHookButtonsState();
+  });
+
+  setSendButtonLabel();
+  updateHookButtonsState();
 
   applyWidths();
 </script>
